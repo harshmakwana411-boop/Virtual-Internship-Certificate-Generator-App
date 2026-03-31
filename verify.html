@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certificate - Certificate Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/verify.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+</head>
+<body>
+    <div class="verify-container">
+        <!-- Header -->
+        <div class="verify-header">
+            <h1>🎓 Verify Certificate</h1>
+            <p>Enter certificate ID or scan QR code to verify authenticity</p>
+        </div>
+
+        <!-- Main Verify Section -->
+        <div class="verify-main">
+            <div class="verify-content">
+                <!-- Verify Form -->
+                <div class="verify-form">
+                    <!-- Tabs -->
+                    <div class="verify-tabs">
+                        <button class="verify-tab active" onclick="switchVerifyTab('id')">Certificate ID</button>
+                        <button class="verify-tab" onclick="switchVerifyTab('qr')">Scan QR Code</button>
+                    </div>
+
+                    <!-- Certificate ID Tab -->
+                    <div class="verify-tab-content active" id="tab-id">
+                        <form id="verify-form" onsubmit="handleVerifyById(event)">
+                            <div class="form-group">
+                                <label>Enter Certificate ID</label>
+                                <div class="input-group">
+                                    <input type="text" id="cert-id-input" placeholder="e.g., CERT-2024-001234" required>
+                                    <button type="submit" class="btn btn-primary">Verify</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Example -->
+                        <div style="margin-top: 1rem; padding: 1rem; background-color: var(--bg-tertiary); border-radius: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <strong>Example:</strong> CERT-2024-001234<br>
+                            You can find this information in your certificate email.
+                        </div>
+                    </div>
+
+                    <!-- QR Code Tab -->
+                    <div class="verify-tab-content" id="tab-qr">
+                        <div class="qr-scanner-area">
+                            <video id="qr-video" style="width: 100%; border-radius: 0.5rem;"></video>
+                            <div id="scan-status" style="margin: 1rem 0; font-size: 0.95rem;">
+                                <p style="margin: 0; color: var(--text-secondary);">Camera controls below</p>
+                            </div>
+                        </div>
+
+                        <div class="camera-controls">
+                            <button type="button" class="btn btn-primary" id="start-camera" onclick="startQRScanner()">
+                                📷 Start Camera
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="stop-camera" onclick="stopQRScanner()" style="display: none;">
+                                ⏹️ Stop Camera
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Or upload QR code image</label>
+                            <div class="file-input-wrapper">
+                                <button type="button" class="btn btn-secondary" style="width: 100%; cursor: pointer;">
+                                    📁 Choose File
+                                </button>
+                                <input type="file" id="qr-image-input" accept="image/*" onchange="handleQRImageUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Result -->
+                <div id="verify-result-container" style="display: none;">
+                    <div class="verify-result" id="verify-result">
+                        <!-- Result content will be inserted here -->
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-secondary" onclick="resetVerification()">← Verify Another Certificate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content" style="text-align: center;">
+            <div class="spinner" style="font-size: 2rem; margin-bottom: 1rem;"></div>
+            <p>Verifying certificate...</p>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; max-width: 400px; z-index: 1000;"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- QR Scanner Library -->
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+
+    <!-- Configuration -->
+    <script src="config/firebase-config.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="js/verify.js"></script>
+    <script src="js/utils.js"></script>
+
+    <script>
+        // Initialize verification page
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Verification page loaded');
+            // Theme support
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+
+        function switchVerifyTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.verify-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.verify-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+</body>
+</html>

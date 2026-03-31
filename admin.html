@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Certificate Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2>🎓 CertGen</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <li><a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <span>📊</span> Dashboard
+                </a></li>
+                <li><a href="#students" class="nav-link" data-page="students">
+                    <span>👥</span> Students
+                </a></li>
+                <li><a href="#certificates" class="nav-link" data-page="certificates">
+                    <span>📝</span> Certificates
+                </a></li>
+                <li><a href="#templates" class="nav-link" data-page="templates">
+                    <span>🎨</span> Templates
+                </a></li>
+                <li><a href="#email" class="nav-link" data-page="email">
+                    <span>📧</span> Email Settings
+                </a></li>
+                <li><a href="#analytics" class="nav-link" data-page="analytics">
+                    <span>📈</span> Analytics
+                </a></li>
+                <li style="margin-top: auto;"><a href="#" id="logout-btn" onclick="handleLogout()">
+                    <span>🚪</span> Logout
+                </a></li>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="admin-title">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="page-subtitle">Welcome back</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-menu-trigger" onclick="toggleUserMenu()">
+                            <div class="user-avatar" id="user-avatar">U</div>
+                            <span id="user-name">User</span>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#profile">👤 Profile</a>
+                            <a href="#settings">⚙️ Settings</a>
+                            <a href="#" onclick="handleLogout()">🚪 Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content" id="adminContent">
+                <!-- Dashboard Page -->
+                <div class="page" id="page-dashboard" style="display: block;">
+                    <div class="content-header">
+                        <h2>Dashboard</h2>
+                        <p>Overview of your certificate management system</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Students</h3>
+                                <p class="stat-value" id="stat-students">0</p>
+                            </div>
+                            <div class="stat-icon primary">👥</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Certificates Generated</h3>
+                                <p class="stat-value" id="stat-certificates">0</p>
+                            </div>
+                            <div class="stat-icon success">📜</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Certificates Verified</h3>
+                                <p class="stat-value" id="stat-verified">0</p>
+                            </div>
+                            <div class="stat-icon warning">✅</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Pending Certificates</h3>
+                                <p class="stat-value" id="stat-pending">0</p>
+                            </div>
+                            <div class="stat-icon danger">⏳</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Certificates</h3>
+                                <a href="#" class="btn btn-sm btn-secondary">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <table id="recent-certs">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Loading...</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Quick Actions</h3>
+                            </div>
+                            <div class="card-body" style="display: grid; gap: 1rem;">
+                                <button class="btn btn-primary" onclick="goToPage('students')">
+                                    ➕ Add New Student
+                                </button>
+                                <button class="btn btn-primary" onclick="goToPage('certificates')">
+                                    📝 Generate Certificate
+                                </button>
+                                <button class="btn btn-secondary" onclick="goToPage('templates')">
+                                    🎨 Manage Templates
+                                </button>
+                                <button class="btn btn-secondary" onclick="openBulkUploadModal()">
+                                    📤 Bulk Upload
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Page -->
+                <div class="page" id="page-students">
+                    <div class="content-header flex-between" style="margin-bottom: 2rem;">
+                        <div>
+                            <h2>Students</h2>
+                            <p>Manage student information</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openStudentModal()">➕ Add Student</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Course</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-tbody">
+                                    <tr><td colspan="6" style="text-align: center;">No students added yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates Page -->
+                <div class="page" id="page-certificates">
+                    <div class="content-header flex-between" style="margin-bottom: 2rem;">
+                        <div>
+                            <h2>Certificates</h2>
+                            <p>Generate and manage certificates</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCertificateModal()">📝 Generate Certificate</button>
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Certificate Templates</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="template-form" onsubmit="handleTemplateUpload(event)">
+                                    <div class="form-group">
+                                        <label>Upload Template (Image/PDF)</label>
+                                        <div class="file-upload-area" id="template-upload-area">
+                                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📄</div>
+                                            <p>Click or drag template here</p>
+                                            <input type="file" id="template-file" accept=".pdf,.jpg,.png,.jpeg">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Template</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Generate Certificate</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="cert-gen-form" onsubmit="handleCertificateGeneration(event)">
+                                    <div class="form-group">
+                                        <label>Select Student</label>
+                                        <select id="student-select" required>
+                                            <option value="">Choose a student...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select Template</label>
+                                        <select id="template-select" required>
+                                            <option value="">Choose a template...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="checkbox" id="send-email"> Send email to student
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-success" style="width: 100%;">Generate & Download</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <div class="card-header">
+                            <h3>Generated Certificates</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="certificates-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cert ID</th>
+                                        <th>Student</th>
+                                        <th>Generated Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="certs-tbody">
+                                    <tr><td colspan="5" style="text-align: center;">No certificates generated</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Templates Page -->
+                <div class="page" id="page-templates">
+                    <div class="content-header">
+                        <h2>Certificate Templates</h2>
+                        <p>Manage your certificate templates</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Available Templates</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="templates-list" class="grid grid-3" style="gap: 1.5rem;">
+                                <div style="text-align: center; grid-column: 1/-1;">
+                                    <p style="color: var(--text-secondary);">No templates uploaded yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Settings Page -->
+                <div class="page" id="page-email">
+                    <div class="content-header">
+                        <h2>Email Configuration</h2>
+                        <p>Configure email settings for certificate delivery</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="email-form" onsubmit="handleEmailConfig(event)">
+                                <div class="form-group">
+                                    <label>EmailJS Service ID</label>
+                                    <input type="text" id="emailjs-service" placeholder="service_xxxxx">
+                                </div>
+                                <div class="form-group">
+                                    <label>EmailJS Public Key</label>
+                                    <input type="text" id="emailjs-public" placeholder="your_public_key">
+                                </div>
+                                <div class="form-group">
+                                    <label>EmailJS Template ID</label>
+                                    <input type="text" id="emailjs-template" placeholder="template_xxxxx">
+                                </div>
+                                <div class="form-group">
+                                    <label>From Email Address</label>
+                                    <input type="email" id="email-from" placeholder="noreply@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Subject Template</label>
+                                    <input type="text" id="email-subject" placeholder="Your Certificate - {{studentName}}" value="Your Certificate is Ready - {{studentName}}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Body Template</label>
+                                    <textarea id="email-body" placeholder="Your email message...">Dear {{studentName}},
+
+Congratulations! Your certificate for {{courseName}} has been generated.
+
+Certificate ID: {{certificateId}}
+
+You can verify your certificate at: {{verifyUrl}}
+
+Best regards,
+Certificate Generator Team</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Configuration</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div class="page" id="page-analytics">
+                    <div class="content-header">
+                        <h2>Analytics</h2>
+                        <p>View statistics and insights</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Active Students</h3>
+                                <p class="stat-value" id="analytics-active">0</p>
+                            </div>
+                            <div class="stat-icon primary">👥</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Certificates Issued</h3>
+                                <p class="stat-value" id="analytics-issued">0</p>
+                            </div>
+                            <div class="stat-icon success">📊</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Verification Rate</h3>
+                                <p class="stat-value" id="analytics-verify-rate">0%</p>
+                            </div>
+                            <div class="stat-icon warning">📈</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Average Days to Verify</h3>
+                                <p class="stat-value" id="analytics-avg-days">0</p>
+                            </div>
+                            <div class="stat-icon info">⏱️</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <div class="card-header">
+                            <h3>Certificate Download History</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="download-history">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Certificate ID</th>
+                                        <th>Downloaded</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody">
+                                    <tr><td colspan="4" style="text-align: center;">No download history</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add Student</span>
+                <button class="modal-close" onclick="closeModal('studentModal')">×</button>
+            </div>
+            <form id="student-add-form" onsubmit="handleAddStudent(event)">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="student-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Course Name *</label>
+                    <input type="text" id="student-course" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration (e.g., 3 months)</label>
+                    <input type="text" id="student-duration" placeholder="e.g., 3 months">
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" id="student-department" placeholder="e.g., IT, HR, Finance">
+                </div>
+                <div class="form-group">
+                    <label>Completion Date</label>
+                    <input type="date" id="student-completion-date">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Add Student</button>
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('studentModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" style="display: none; position: fixed; top: 20px; right: 20px; background: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; z-index: 1001;">
+        <div class="spinner" style="display: inline-block; margin-right: 0.5rem;"></div>
+        <span id="loading-text">Processing...</span>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 80px; right: 20px; max-width: 400px; z-index: 1000;"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- EmailJS Library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
+
+    <!-- Configuration -->
+    <script src="config/firebase-config.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/certificate.js"></script>
+    <script src="js/email.js"></script>
+    <script src="js/utils.js"></script>
+
+    <script>
+        // Initialize admin page
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeAdmin();
+            // Check authentication
+            if (firebaseServices && firebaseServices.auth) {
+                firebaseServices.auth.onAuthStateChanged(user => {
+                    if (!user) {
+                        window.location.href = 'auth.html';
+                    } else {
+                        loadDashboard();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

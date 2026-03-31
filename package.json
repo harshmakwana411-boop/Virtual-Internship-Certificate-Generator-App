@@ -1,0 +1,28 @@
+{
+  "name": "virtual-internship-certificate-generator",
+  "version": "1.0.0",
+  "description": "A modern full-stack web application for generating and verifying digital certificates",
+  "main": "index.html",
+  "scripts": {
+    "start": "firebase serve",
+    "build": "echo 'No build required for vanilla JS'",
+    "deploy": "firebase deploy",
+    "serve": "firebase serve --only hosting"
+  },
+  "keywords": [
+    "certificate",
+    "internship",
+    "qrcode",
+    "firebase",
+    "generator",
+    "verification"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.0.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^12.0.0"
+  }
+}

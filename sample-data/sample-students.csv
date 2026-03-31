@@ -1,0 +1,16 @@
+name,email,course,duration,department,completionDate
+John Smith,john.smith@example.com,Web Development,3 Months,IT,2024-03-31
+Sarah Johnson,sarah.j@example.com,Data Science,6 Months,Analytics,2024-04-15
+Michael Brown,m.brown@example.com,Cloud Computing,4 Months,Infrastructure,2024-04-01
+Emily Davis,emily.davis@example.com,Mobile App Development,5 Months,Development,2024-04-10
+Robert Wilson,r.wilson@example.com,Cybersecurity,3 Months,Security,2024-03-28
+Jessica Miller,j.miller@example.com,AI & Machine Learning,6 Months,Research,2024-04-20
+James Taylor,james.t@example.com,DevOps Engineering,4 Months,Infrastructure,2024-04-05
+Maria Garcia,maria.garcia@example.com,Frontend Development,3 Months,Development,2024-04-02
+David Martinez,d.martinez@example.com,Backend Development,5 Months,Development,2024-04-12
+Lisa Anderson,lisa.a@example.com,Business Analytics,2 Months,Analytics,2024-03-25
+Christopher Lee,c.lee@example.com,Full Stack Development,6 Months,Development,2024-04-18
+Amanda White,amanda.w@example.com,UX/UI Design,3 Months,Design,2024-03-30
+Kevin Harris,kevin.h@example.com,Python Programming,3 Months,Development,2024-04-08
+Stephanie Clark,stephanie.c@example.com,Database Administration,4 Months,Infrastructure,2024-04-06
+Thomas Martin,t.martin@example.com,Network Engineering,5 Months,Infrastructure,2024-04-14
